@@ -1,0 +1,46 @@
+import java.util.List;
+
+import org.junit.Assert;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+public class Scenario1 {
+
+	public static void main(String[] args) {
+
+		System.setProperty("webdriver.chrome.driver", "C:\\webdrivers\\chromedriver.exe" );
+		WebDriver driver = new ChromeDriver();
+		
+		driver.get("https://www.jetblue.com/");
+		driver.manage().window().maximize();
+		
+		driver.findElement(By.cssSelector("#jb-autocomplete-1-search")).sendKeys("New York");
+		
+		List<WebElement> options1 = driver.findElements(By.cssSelector("li[role='option'] jb-copy"));
+		
+		WebDriverWait wait1 = new WebDriverWait(driver,30);
+		wait1.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//ul[@id='jb-autocomplete-1']")));
+		
+		for(WebElement option : options1){
+		if(option.getText().equalsIgnoreCase("New York, NY (JFK)")){
+			option.click();
+			break;
+		}
+		break;
+		}
+		
+		driver.findElement(By.cssSelector("button[role='button']")).click();
+
+		String error1 = driver.findElement(By.xpath("//span[contains(text(),'valid city')]")).getText();
+		
+		String expectedError1 = "Please enter a valid city";
+		
+		Assert.assertEquals(error1, expectedError1);
+
+	}
+
+}
